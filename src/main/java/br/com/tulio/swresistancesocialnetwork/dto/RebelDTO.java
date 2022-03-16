@@ -5,12 +5,9 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.validation.constraints.Min;
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
+import javax.validation.Valid;
+import javax.validation.constraints.*;
+import java.util.List;
 
 @Data
 @Builder
@@ -31,4 +28,22 @@ public class RebelDTO {
     @NotNull
     @NotBlank(message = "Gender is mandatory")
     private String gender;
+
+    @DecimalMin(value = "0.0")
+    @DecimalMax(value = "1000.00")
+    @NotNull
+    private Double latitude;
+
+    @DecimalMin(value = "0.0")
+    @DecimalMax(value = "1000.00")
+    @NotNull
+    private Double longitude;
+
+    @NotNull
+    @NotBlank(message = "Base name is mandatory")
+    private String baseName;
+
+    @Valid
+    @NotEmpty
+    private List<ItemDTO> items;
 }
