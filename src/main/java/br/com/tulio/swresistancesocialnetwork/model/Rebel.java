@@ -1,24 +1,25 @@
 package br.com.tulio.swresistancesocialnetwork.model;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
-import javax.validation.constraints.*;
-import java.util.UUID;
 
-@Data
 @Entity
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
 public class Rebel {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @NotNull
-    private UUID rebelId;
-    @NotNull @NotBlank(message = "Name is mandatory")
+
     private String name;
-    @NotNull @NotBlank(message = "Age is mandatory")
+
     private Integer age;
-    @NotNull @NotBlank(message = "Gender is mandatory")
+
     private String gender;
 
 }
