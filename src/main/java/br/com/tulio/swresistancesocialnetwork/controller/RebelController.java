@@ -1,7 +1,10 @@
 package br.com.tulio.swresistancesocialnetwork.controller;
 
+import br.com.tulio.swresistancesocialnetwork.dto.DenounceTraitorDTO;
 import br.com.tulio.swresistancesocialnetwork.dto.LocationDTO;
+import br.com.tulio.swresistancesocialnetwork.dto.MessageResponseDTO;
 import br.com.tulio.swresistancesocialnetwork.dto.RebelDTO;
+import br.com.tulio.swresistancesocialnetwork.exceptions.RebelCanNotBeChosenException;
 import br.com.tulio.swresistancesocialnetwork.exceptions.RebelNotFoundException;
 import br.com.tulio.swresistancesocialnetwork.services.RebelService;
 import lombok.AllArgsConstructor;
@@ -37,5 +40,10 @@ public class RebelController {
     @PatchMapping("/{id}/updateLocation")
     public RebelDTO updateLocation(@PathVariable Long id, @RequestBody @Valid LocationDTO locationDTO) throws RebelNotFoundException {
         return rebelService.updateLocation(id, locationDTO);
+    }
+
+    @PostMapping("/denounceTraitor")
+    public MessageResponseDTO denounceTraitorSuspect(@Valid @RequestBody DenounceTraitorDTO denounceTraitorDTO) throws RebelNotFoundException, RebelCanNotBeChosenException {
+        return rebelService.denounceTraitor(denounceTraitorDTO);
     }
 }

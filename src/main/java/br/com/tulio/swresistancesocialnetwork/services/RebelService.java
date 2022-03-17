@@ -1,7 +1,10 @@
 package br.com.tulio.swresistancesocialnetwork.services;
 
+import br.com.tulio.swresistancesocialnetwork.dto.DenounceTraitorDTO;
 import br.com.tulio.swresistancesocialnetwork.dto.LocationDTO;
+import br.com.tulio.swresistancesocialnetwork.dto.MessageResponseDTO;
 import br.com.tulio.swresistancesocialnetwork.dto.RebelDTO;
+import br.com.tulio.swresistancesocialnetwork.exceptions.RebelCanNotBeChosenException;
 import br.com.tulio.swresistancesocialnetwork.exceptions.RebelNotFoundException;
 import br.com.tulio.swresistancesocialnetwork.mapper.RebelMapper;
 import br.com.tulio.swresistancesocialnetwork.model.Rebel;
@@ -11,6 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 @Service
@@ -48,7 +52,23 @@ public class RebelService {
         return rebelMapper.toDTO(rebelWithLocationUpdated);
     }
 
+    public MessageResponseDTO denounceTraitor(DenounceTraitorDTO denounceTraitorDTO) throws RebelNotFoundException, RebelCanNotBeChosenException {
+        Rebel informerRebel = verifyIfExists(denounceTraitorDTO.getInformerId());
+        Rebel traitorRebel = verifyIfExists(denounceTraitorDTO.getTraitorId());
+        if (Objects.equals(informerRebel, traitorRebel)) {
+            throw new RebelCanNotBeChosenException(traitorRebel.getId());
+        }
+        return createMessageResponse(traitorRebel.getId(), "Successfully denounced traitor rebel with ID ");
+    }
+
     private Rebel verifyIfExists(Long id) throws RebelNotFoundException {
         return rebelRepository.findById(id).orElseThrow(() -> new RebelNotFoundException(id));
+    }
+
+    private MessageResponseDTO createMessageResponse(Long id, String message) {
+        return MessageResponseDTO
+                .builder()
+                .message(message + id)
+                .build();
     }
 }
