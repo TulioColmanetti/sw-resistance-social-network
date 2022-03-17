@@ -11,6 +11,8 @@ import javax.validation.constraints.NotNull;
 @NoArgsConstructor
 public class DenounceTraitorDTO {
 
+    private Long id;
+
     @Min(1)
     @NotNull
     Long informerId;
