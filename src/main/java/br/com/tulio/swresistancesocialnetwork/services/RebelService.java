@@ -1,8 +1,10 @@
 package br.com.tulio.swresistancesocialnetwork.services;
 
+import br.com.tulio.swresistancesocialnetwork.dto.ItemDTO;
 import br.com.tulio.swresistancesocialnetwork.dto.LocationDTO;
 import br.com.tulio.swresistancesocialnetwork.dto.RebelDTO;
 import br.com.tulio.swresistancesocialnetwork.exceptions.RebelNotFoundException;
+import br.com.tulio.swresistancesocialnetwork.mapper.ItemMapper;
 import br.com.tulio.swresistancesocialnetwork.mapper.RebelMapper;
 import br.com.tulio.swresistancesocialnetwork.model.Rebel;
 import br.com.tulio.swresistancesocialnetwork.repository.RebelRepository;
@@ -19,6 +21,7 @@ public class RebelService {
 
     final RebelRepository rebelRepository;
     private final RebelMapper rebelMapper = RebelMapper.INSTANCE;
+    private final ItemMapper itemMapper = ItemMapper.INSTANCE;
 
     public RebelDTO createRebel(RebelDTO rebelDTO) {
         Rebel rebel = rebelMapper.toModel(rebelDTO);
@@ -39,13 +42,20 @@ public class RebelService {
         return rebelMapper.toDTO(rebel);
     }
 
-    public RebelDTO updateLocation(Long id, LocationDTO updateLocationDTO) throws RebelNotFoundException {
+    public RebelDTO updateLocation(Long id, LocationDTO updatedLocationDTO) throws RebelNotFoundException {
         Rebel rebelToUpdateLocation = verifyIfExists(id);
-        rebelToUpdateLocation.setLatitude(updateLocationDTO.getLatitude());
-        rebelToUpdateLocation.setLongitude(updateLocationDTO.getLongitude());
-        rebelToUpdateLocation.setBaseName(updateLocationDTO.getBaseName());
+        rebelToUpdateLocation.setLatitude(updatedLocationDTO.getLatitude());
+        rebelToUpdateLocation.setLongitude(updatedLocationDTO.getLongitude());
+        rebelToUpdateLocation.setBaseName(updatedLocationDTO.getBaseName());
         Rebel rebelWithLocationUpdated = rebelRepository.save(rebelToUpdateLocation);
         return rebelMapper.toDTO(rebelWithLocationUpdated);
+    }
+
+    public RebelDTO updateItems(Long id, List<ItemDTO> updatedItemsDTO) throws RebelNotFoundException {
+        Rebel rebelToUpdateItems = verifyIfExists(id);
+        rebelToUpdateItems.setItems(updatedItemsDTO.stream().map(itemMapper::toModel).collect(Collectors.toList()));
+        Rebel rebelWithItemsUpdated = rebelRepository.save(rebelToUpdateItems);
+        return rebelMapper.toDTO(rebelWithItemsUpdated);
     }
 
     private Rebel verifyIfExists(Long id) throws RebelNotFoundException {
