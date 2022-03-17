@@ -2,6 +2,8 @@ package br.com.tulio.swresistancesocialnetwork.controller;
 
 import br.com.tulio.swresistancesocialnetwork.dto.DenounceTraitorDTO;
 import br.com.tulio.swresistancesocialnetwork.dto.MessageResponseDTO;
+import br.com.tulio.swresistancesocialnetwork.dto.RebelDTO;
+import br.com.tulio.swresistancesocialnetwork.exceptions.DenounceTraitorAlreadyRegisteredException;
 import br.com.tulio.swresistancesocialnetwork.exceptions.RebelCanNotBeChosenException;
 import br.com.tulio.swresistancesocialnetwork.exceptions.RebelNotFoundException;
 import br.com.tulio.swresistancesocialnetwork.services.DenounceTraitorService;
@@ -21,7 +23,12 @@ public class DenounceTraitorController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public MessageResponseDTO denounceTraitor(@Valid @RequestBody DenounceTraitorDTO denounceTraitorDTO) throws RebelNotFoundException, RebelCanNotBeChosenException {
+    public DenounceTraitorDTO denounceTraitor(@Valid @RequestBody DenounceTraitorDTO denounceTraitorDTO) throws RebelNotFoundException, RebelCanNotBeChosenException, DenounceTraitorAlreadyRegisteredException {
         return denounceTraitorService.denounceTraitor(denounceTraitorDTO);
+    }
+
+    @GetMapping("/{id}")
+    public boolean checkIfTraitorRebelById(@PathVariable Long id) throws RebelNotFoundException {
+        return denounceTraitorService.checkIfTraitorRebelById(id);
     }
 }
