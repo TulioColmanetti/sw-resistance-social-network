@@ -15,9 +15,9 @@ public class DenounceTraitorDTO {
 
     @Min(1)
     @NotNull
-    Long informerId;
+    private Long informerId;
 
     @Min(1)
     @NotNull
-    Long traitorId;
+    private Long traitorId;
 }
