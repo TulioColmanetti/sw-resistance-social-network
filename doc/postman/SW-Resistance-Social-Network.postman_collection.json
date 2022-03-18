@@ -1,0 +1,194 @@
+{
+	"info": {
+		"_postman_id": "583810ea-cab4-4abe-ae6a-e83238ea6ffb",
+		"name": "SW-Resistance-Social-Network",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Rebels",
+			"item": [
+				{
+					"name": "List All Rebels",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{address}}/api/v1/rebels",
+							"host": [
+								"{{address}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"rebels"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Find Rebel by Id",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{address}}/api/v1/rebels/1",
+							"host": [
+								"{{address}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"rebels",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create Rebel",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n\t\"name\": \"RebelX\",\r\n\t\"age\": 36,\r\n\t\"gender\": \"Male\",\r\n    \"latitude\": 22.1,\r\n    \"longitude\": 573.2,\r\n\t\"baseName\": \"Yavin 4\",\r\n    \"items\": [\r\n        {\r\n            \"itemType\": \"AMMO\"\r\n        },\r\n        {\r\n            \"itemType\": \"WATER\"\r\n        },\r\n        {\r\n            \"itemType\": \"WATER\"\r\n        }\r\n    ]\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{address}}/api/v1/rebels",
+							"host": [
+								"{{address}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"rebels"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update Rebel Location",
+					"request": {
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"latitude\": 53.1,\r\n    \"longitude\": 27.2,\r\n\t\"baseName\": \"Kashyyk\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{address}}/api/v1/rebels/1/updateLocation",
+							"host": [
+								"{{address}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"rebels",
+								"1",
+								"updateLocation"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Resistance Network",
+			"item": [
+				{
+					"name": "Denounce Traitor",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"informerId\": 1,\r\n    \"traitorId\": 2\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{address}}/api/v1/resistance-network/traitors",
+							"host": [
+								"{{address}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"resistance-network",
+								"traitors"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Trade Items",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"firstRebelId\": 1,\r\n    \"firstRebelItems\": [\r\n        {\r\n            \"itemType\": \"WATER\"\r\n        },\r\n        {\r\n            \"itemType\": \"WATER\"\r\n        },\r\n        {\r\n            \"itemType\": \"AMMO\"\r\n        }\r\n    ],\r\n    \"secondRebelId\": 2,\r\n    \"secondRebelItems\": [\r\n        {\r\n            \"itemType\": \"WATER\"\r\n        },\r\n        {\r\n            \"itemType\": \"WATER\"\r\n        },\r\n        {\r\n            \"itemType\": \"AMMO\"\r\n        }\r\n    ]\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{address}}/api/v1/resistance-network/trade",
+							"host": [
+								"{{address}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"resistance-network",
+								"trade"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Generate Reports",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{address}}/api/v1/resistance-network/reports",
+							"host": [
+								"{{address}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"resistance-network",
+								"reports"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	]
+}
