@@ -266,7 +266,23 @@ public class ResistanceNetworkService {
     }
 
     private Long generateItemPointsLostDueToTraitors() {
-        return null;
+        long itemPointsLost = 0;
+
+        List<Rebel> rebelList = rebelRepository.findAll();
+        List<Rebel> traitorRebelList = new ArrayList<>();
+
+        for (Rebel rebel : rebelList) {
+            if(checkIfTraitorRebelById(rebel.getId()))
+                traitorRebelList.add(rebel);
+        }
+
+        for (Rebel traitorRebel : traitorRebelList) {
+            for (Item item : traitorRebel.getItems()) {
+                itemPointsLost += item.getItemType().getPoints();
+            }
+        }
+
+        return itemPointsLost;
     }
     //endregion
 
