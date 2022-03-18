@@ -207,11 +207,62 @@ public class ResistanceNetworkService {
     }
 
     private Double generateRebelsPercentage() {
-        return null;
+        if (rebelRepository.findAll().size() == 0) {
+            return 0.0;
+        }
+
+        return 100.0 - generateTraitorsPercentage();
     }
 
     private List<Double> generateAverageItemQuantityPerRebel() {
-        return null;
+        double itemWeaponCount = 0.0;
+        double itemAmmoCount = 0.0;
+        double itemWaterCount = 0.0;
+        double itemFoodCount = 0.0;
+
+        List<Rebel> rebelList = rebelRepository.findAll();
+        List<Rebel> traitorRebelList = new ArrayList<>();
+
+        for (Rebel rebel : rebelList) {
+            if(checkIfTraitorRebelById(rebel.getId()))
+                traitorRebelList.add(rebel);
+        }
+
+        rebelList.removeAll(traitorRebelList);
+        long reliableRebels = rebelList.size();
+
+        if (reliableRebels == 0) {
+            return Arrays.asList(0.0,0.0,0.0,0.0);
+        }
+
+        for (Rebel rebel : rebelList) {
+            for (Item item : rebel.getItems()) {
+                switch (item.getItemType().ordinal()){
+                    case 0:
+                        itemWeaponCount++;
+                        break;
+                    case 1:
+                        itemAmmoCount++;
+                        break;
+                    case 2:
+                        itemWaterCount++;
+                        break;
+                    case 3:
+                        itemFoodCount++;
+                        break;
+                    default:
+                        break;
+                }
+            }
+        }
+
+        List<Double> averageItemQuantityPerRebel = new ArrayList<>();
+        averageItemQuantityPerRebel.add(itemWeaponCount/reliableRebels);
+        averageItemQuantityPerRebel.add(itemAmmoCount/reliableRebels);
+        averageItemQuantityPerRebel.add(itemWaterCount/reliableRebels);
+        averageItemQuantityPerRebel.add(itemFoodCount/reliableRebels);
+
+        return averageItemQuantityPerRebel;
     }
 
     private Long generateItemPointsLostDueToTraitors() {

@@ -7,7 +7,7 @@ import lombok.NoArgsConstructor;
 
 import javax.validation.Valid;
 import javax.validation.constraints.DecimalMin;
-import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 import java.util.List;
 
@@ -29,7 +29,7 @@ public class ReportDTO {
     @NotNull
     private List<Double> averageItemQuantityPerRebel;
 
-    @DecimalMin(value = "0.0")
+    @Min(0)
     @NotNull
     private Long itemPointsLostDueToTraitors;
 }
