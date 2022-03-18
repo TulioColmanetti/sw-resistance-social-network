@@ -1,6 +1,7 @@
 package br.com.tulio.swresistancesocialnetwork.controller;
 
 import br.com.tulio.swresistancesocialnetwork.dto.DenounceTraitorDTO;
+import br.com.tulio.swresistancesocialnetwork.dto.ReportDTO;
 import br.com.tulio.swresistancesocialnetwork.dto.TradeItemsDTO;
 import br.com.tulio.swresistancesocialnetwork.exceptions.DenounceTraitorAlreadyRegisteredException;
 import br.com.tulio.swresistancesocialnetwork.exceptions.DistinctRebelsRequiredException;
@@ -30,5 +31,10 @@ public class ResistanceNetworkController {
     @PostMapping("/trade")
     public TradeItemsDTO tradeItems(@Valid @RequestBody TradeItemsDTO tradeItemsDTO) throws TradeNotValidException, DistinctRebelsRequiredException, RebelNotFoundException {
         return resistanceNetworkService.tradeItems(tradeItemsDTO);
+    }
+
+    @GetMapping("/reports")
+    public ReportDTO getReports() {
+        return resistanceNetworkService.getReports();
     }
 }

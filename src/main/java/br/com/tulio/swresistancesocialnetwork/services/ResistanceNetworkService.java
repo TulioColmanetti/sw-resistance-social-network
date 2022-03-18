@@ -1,9 +1,6 @@
 package br.com.tulio.swresistancesocialnetwork.services;
 
-import br.com.tulio.swresistancesocialnetwork.dto.DenounceTraitorDTO;
-import br.com.tulio.swresistancesocialnetwork.dto.ItemDTO;
-import br.com.tulio.swresistancesocialnetwork.dto.RebelDTO;
-import br.com.tulio.swresistancesocialnetwork.dto.TradeItemsDTO;
+import br.com.tulio.swresistancesocialnetwork.dto.*;
 import br.com.tulio.swresistancesocialnetwork.enums.ItemType;
 import br.com.tulio.swresistancesocialnetwork.exceptions.DenounceTraitorAlreadyRegisteredException;
 import br.com.tulio.swresistancesocialnetwork.exceptions.DistinctRebelsRequiredException;
@@ -20,10 +17,7 @@ import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -36,6 +30,7 @@ public class ResistanceNetworkService {
     private final ItemMapper itemMapper = ItemMapper.INSTANCE;
     private final RebelService rebelService;
 
+    //region Denounce Traitor Section
     public DenounceTraitorDTO denounceTraitor(DenounceTraitorDTO denounceTraitorDTO) throws RebelNotFoundException, DistinctRebelsRequiredException, DenounceTraitorAlreadyRegisteredException {
         Long informerRebelId = denounceTraitorDTO.getInformerId();
         Long traitorRebelId = denounceTraitorDTO.getTraitorId();
@@ -69,28 +64,28 @@ public class ResistanceNetworkService {
         }
     }
 
-    private Rebel verifyIfRebelExists(Long id) throws RebelNotFoundException {
-        return rebelRepository.findById(id).orElseThrow(() -> new RebelNotFoundException(id));
-    }
+    //endregion
 
+    //region Trade Section
     public TradeItemsDTO tradeItems(TradeItemsDTO tradeItemsDTO) throws TradeNotValidException, DistinctRebelsRequiredException, RebelNotFoundException {
         checkIfValidTrade(tradeItemsDTO);
 
         Rebel firstRebel = verifyIfRebelExists(tradeItemsDTO.getFirstRebelId());
         Rebel secondRebel = verifyIfRebelExists(tradeItemsDTO.getSecondRebelId());
 
+        // Remove items to be sent to other rebel from owner's inventory
         List<Item> firstRebelNewInventory = removeItemsFromInventory(firstRebel.getItems(), tradeItemsDTO.getFirstRebelItems());
         List<Item> secondRebelNewInventory = removeItemsFromInventory(secondRebel.getItems(), tradeItemsDTO.getSecondRebelItems());
 
+        // Add all received items from other rebel to current inventory
         firstRebelNewInventory.addAll(tradeItemsDTO.getSecondRebelItems().stream().map(itemMapper::toModel).collect(Collectors.toList()));
         secondRebelNewInventory.addAll(tradeItemsDTO.getFirstRebelItems().stream().map(itemMapper::toModel).collect(Collectors.toList()));
 
-        System.out.println(firstRebelNewInventory);
-        System.out.println(secondRebelNewInventory);
-
+        // Persist new inventory for both rebels after trade completed
         RebelDTO firstRebelDTO = rebelService.updateItems(firstRebel.getId(), firstRebelNewInventory.stream().map(itemMapper::toDTO).collect(Collectors.toList()));
         RebelDTO secondRebelDTO = rebelService.updateItems(secondRebel.getId(), secondRebelNewInventory.stream().map(itemMapper::toDTO).collect(Collectors.toList()));
 
+        // Switch inventories between rebels for response
         tradeItemsDTO.setFirstRebelItems(secondRebelDTO.getItems());
         tradeItemsDTO.setSecondRebelItems(firstRebelDTO.getItems());
 
@@ -171,6 +166,61 @@ public class ResistanceNetworkService {
         }
 
         return totalPoints;
+    }
+    //endregion
+
+    //region Report Section
+    public ReportDTO getReports() {
+        return ReportDTO.builder()
+                .traitorsPercentage(generateTraitorsPercentage())
+                .rebelsPercentage(generateRebelsPercentage())
+                .averageItemQuantityPerRebel(generateAverageItemQuantityPerRebel())
+                .itemPointsLostDueToTraitors(generateItemPointsLostDueToTraitors())
+                .build();
+    }
+
+    private Double generateTraitorsPercentage() {
+        List<Rebel> rebelList = rebelRepository.findAll();
+
+        double numberOfRebels = rebelList.size();
+        if (numberOfRebels == 0) {
+            return 0.0;
+        }
+
+        double numberOfTraitors = calculateTraitorCount(rebelList);
+        if (numberOfTraitors == 0) {
+            return 0.0;
+        }
+
+        return (numberOfTraitors / numberOfRebels) * 100.0;
+    }
+
+    private double calculateTraitorCount(List<Rebel> rebelList) {
+        double numberOfTraitors = 0;
+
+        for (Rebel rebel : rebelList) {
+            if(checkIfTraitorRebelById(rebel.getId()))
+                numberOfTraitors++;
+        }
+
+        return numberOfTraitors;
+    }
+
+    private Double generateRebelsPercentage() {
+        return null;
+    }
+
+    private List<Double> generateAverageItemQuantityPerRebel() {
+        return null;
+    }
+
+    private Long generateItemPointsLostDueToTraitors() {
+        return null;
+    }
+    //endregion
+
+    private Rebel verifyIfRebelExists(Long id) throws RebelNotFoundException {
+        return rebelRepository.findById(id).orElseThrow(() -> new RebelNotFoundException(id));
     }
 
 //    private MessageResponseDTO createMessageResponse(Long id, String message) {
